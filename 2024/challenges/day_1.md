@@ -40,7 +40,7 @@ To find the total distance between the left list and the right list, add up the 
 
 Your actual left and right lists contain many location IDs. What is the total distance between your lists?
 
-# Part 2
+# Part Two
 Your analysis only confirmed what everyone feared: the two lists of location IDs are indeed very different.
 
 Or are they?

@@ -2,7 +2,7 @@
 
 using Microsoft.Extensions.Logging;
 
-public class Day_1
+public class Day_1 : IDay
 {
     private ILogger<Day_1> _logger;
     public Day_1(ILoggerFactory factory)
