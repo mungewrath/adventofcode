@@ -29,22 +29,39 @@ public class Day_3 : IDay
         STATE_OPEN_PAREN,
         STATE_FIRST_NUM,
         STATE_COMMA,
-        STATE_SECOND_NUM
+        STATE_SECOND_NUM,
+        STATE_D,
+        STATE_O,
+        STATE_DO_OPEN,
+        STATE_N,
+        STATE_APOS,
+        STATE_T,
+        STATE_DONT_OPEN
     }
 
-    private int EvaluateValidInstructions(string line)
+    // This could be better optimized by skipping ahead for known sequences like mul(, then you don't need intermediate states
+    private int EvaluateValidInstructions(string line, bool useToggles = false)
     {
         int total = 0;
         State currentState = State.STATE_BASE;
         int firstNum = 0;
         int secondNum = 0;
+        bool enabled = true;
 
         foreach (char c in line)
         {
+            // Shortcut since you can get there from anywhere
+            if (c == 'd' && useToggles)
+            {
+                currentState = State.STATE_D;
+                firstNum = secondNum = 0;
+                continue;
+            }
+
             switch (currentState)
             {
                 case State.STATE_BASE:
-                    if (c == 'm')
+                    if (c == 'm' && enabled)
                     {
                         currentState = State.STATE_M;
                     }
@@ -138,6 +155,72 @@ public class Day_3 : IDay
                         goto default;
                     }
                     break;
+                case State.STATE_D:
+                    if (c == 'o')
+                    {
+                        currentState = State.STATE_O;
+                    }
+                    else
+                    {
+                        goto default;
+                    }
+                    break;
+                case State.STATE_O:
+                    if (c == '(')
+                    {
+                        currentState = State.STATE_DO_OPEN;
+                    }
+                    else if (c == 'n')
+                    {
+                        currentState = State.STATE_N;
+                    }
+                    else
+                    {
+                        goto default;
+                    }
+                    break;
+                case State.STATE_DO_OPEN:
+                    if (c == ')')
+                    {
+                        enabled = true;
+                    }
+                    goto default;
+                case State.STATE_N:
+                    if (c == '\'')
+                    {
+                        currentState = State.STATE_APOS;
+                    }
+                    else
+                    {
+                        goto default;
+                    }
+                    break;
+                case State.STATE_APOS:
+                    if (c == 't')
+                    {
+                        currentState = State.STATE_T;
+                    }
+                    else
+                    {
+                        goto default;
+                    }
+                    break;
+                case State.STATE_T:
+                    if (c == '(')
+                    {
+                        currentState = State.STATE_DONT_OPEN;
+                    }
+                    else
+                    {
+                        goto default;
+                    }
+                    break;
+                case State.STATE_DONT_OPEN:
+                    if (c == ')')
+                    {
+                        enabled = false;
+                    }
+                    goto default;
                 default:
                     currentState = State.STATE_BASE;
                     firstNum = secondNum = 0;
@@ -148,19 +231,13 @@ public class Day_3 : IDay
         return total;
     }
 
-    // Intuition: O(N^2) method is to remove a single element at a time from a list, and then call IsReportSafe.
-    // Not optimal; better would be to notice the first time a problem occurs, see if jumping (ignoring) it helps, and if not, marking as a failure
+    // Same as above, but the code was extended
     public int SolvePartTwo(string inputPath)
     {
-        string[] lines = File.ReadAllLines(inputPath);
+        string lines = string.Join("", File.ReadAllLines(inputPath));
 
+        int total = EvaluateValidInstructions(lines, useToggles: true);
 
-        throw new NotImplementedException();
-        // return safeReports;
-    }
-
-    private List<int> ParseLine(string line)
-    {
-        return line.Split(" ").Select(s => int.Parse(s)).ToList();
+        return total;
     }
 }

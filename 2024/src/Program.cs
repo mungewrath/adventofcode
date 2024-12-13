@@ -34,6 +34,8 @@ public class AdventOfCode
                 return new Day_2(loggerFactory);
             case 3:
                 return new Day_3(loggerFactory);
+            case 4:
+                return new Day_4(loggerFactory);
             default:
                 throw new NotImplementedException("Invalid day specified");
         }
