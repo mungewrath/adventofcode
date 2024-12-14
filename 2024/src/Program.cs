@@ -36,6 +36,48 @@ public class AdventOfCode
                 return new Day_3(loggerFactory);
             case 4:
                 return new Day_4(loggerFactory);
+            case 5:
+                return new Day_5(loggerFactory);
+            case 6:
+                return new Day_6(loggerFactory);
+            case 7:
+                return new Day_7(loggerFactory);
+            case 8:
+                return new Day_8(loggerFactory);
+            case 9:
+                return new Day_9(loggerFactory);
+            case 10:
+                return new Day_10(loggerFactory);
+            case 11:
+                return new Day_11(loggerFactory);
+            case 12:
+                return new Day_12(loggerFactory);
+            case 13:
+                return new Day_13(loggerFactory);
+            case 14:
+                return new Day_14(loggerFactory);
+            case 15:
+                return new Day_15(loggerFactory);
+            case 16:
+                return new Day_16(loggerFactory);
+            case 17:
+                return new Day_17(loggerFactory);
+            case 18:
+                return new Day_18(loggerFactory);
+            case 19:
+                return new Day_19(loggerFactory);
+            case 20:
+                return new Day_20(loggerFactory);
+            case 21:
+                return new Day_21(loggerFactory);
+            case 22:
+                return new Day_22(loggerFactory);
+            case 23:
+                return new Day_23(loggerFactory);
+            case 24:
+                return new Day_24(loggerFactory);
+            case 25:
+                return new Day_25(loggerFactory);
             default:
                 throw new NotImplementedException("Invalid day specified");
         }
