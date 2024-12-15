@@ -4,14 +4,14 @@ using Microsoft.Extensions.Logging;
 public class Day_6Test
 {
     [Fact]
-    public void Solve_()
+    public void Solve_TracesMazeCorrectly()
     {
         using ILoggerFactory factory = LoggerFactory.Create(builder => { });
         Day_6 solver = new(factory);
 
         int result = solver.Solve("day_6_sample.txt");
 
-        Assert.Equal(11, result);
+        Assert.Equal(41, result);
     }
 
     [Fact]
