@@ -3,9 +3,11 @@ using Microsoft.Extensions.Logging;
 public class Day_5 : IDay
 {
     private ILogger<Day_5> _logger;
+    private ILoggerFactory _loggerFactory;
     public Day_5(ILoggerFactory factory)
     {
         _logger = factory.CreateLogger<Day_5>();
+        _loggerFactory = factory;
     }
 
     // Intuition: the core problem is tracking that for X|Y, X came _before_ Y.
@@ -90,10 +92,36 @@ public class Day_5 : IDay
         return true;
     }
 
+    // Intuition: Suspected this at first, and after researching it is a directed acyclic graph (DAG). This can be solved using depth first search. O(N+R) according to wikipedia.
     public int SolvePartTwo(string inputPath)
     {
         string[] lines = File.ReadAllLines(inputPath);
+        int total = 0;
 
-        return 0;
+
+        (Dictionary<int, List<int>> rules, List<List<int>> pageNumberSets) = ReadRevisions(lines);
+
+        _logger.LogInformation("rules={Rules}", rules);
+        _logger.LogInformation("pageNumberSets={pageNumberSets}", pageNumberSets);
+
+        foreach (List<int> pages in pageNumberSets)
+        {
+            _logger.LogInformation("Solving for the set of numbers: {nums}", string.Join(",", pages));
+
+            if (CorrectlyOrdered(pages, rules))
+            {
+                _logger.LogInformation("The set is already sorted, skipping");
+                continue;
+            }
+
+            var dag = new DirectedAcyclicGraph(dependencies: rules, pages, _loggerFactory);
+
+            var sorted = dag.TopographicalSort();
+            _logger.LogInformation("Received topographically sorted pages as {pages}", string.Join(",", sorted));
+
+            total += sorted[sorted.Count / 2];
+        }
+
+        return total;
     }
 }
