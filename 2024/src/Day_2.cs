@@ -11,7 +11,7 @@ public class Day_2 : IDay
 
     // Intuition: Each line is traversing and remembering something from the prior element.
     // You can do this a couple memory variables in O(N) time and constant space.
-    public int Solve(string inputPath)
+    public long Solve(string inputPath)
     {
         string[] lines = File.ReadAllLines(inputPath);
 
@@ -59,7 +59,7 @@ public class Day_2 : IDay
 
     // Intuition: O(N^2) method is to remove a single element at a time from a list, and then call IsReportSafe.
     // Not optimal; better would be to notice the first time a problem occurs, see if jumping (ignoring) it helps, and if not, marking as a failure
-    public int SolvePartTwo(string inputPath)
+    public long SolvePartTwo(string inputPath)
     {
         string[] lines = File.ReadAllLines(inputPath);
 

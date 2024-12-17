@@ -8,14 +8,14 @@ public class Day_21 : IDay
         _logger = factory.CreateLogger<Day_21>();
     }
 
-    public int Solve(string inputPath)
+    public long Solve(string inputPath)
     {
         string[] lines = File.ReadAllLines(inputPath);
 
         return 0;
     }
 
-    public int SolvePartTwo(string inputPath)
+    public long SolvePartTwo(string inputPath)
     {
         string[] lines = File.ReadAllLines(inputPath);
 

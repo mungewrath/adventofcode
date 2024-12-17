@@ -14,7 +14,7 @@ public class Day_5 : IDay
     // As we traverse, we can keep a list of all prior numbers, so it is easy to tell if rules were satisfied.
     // The other part is managing the rules in play. They are triggered by Y, so index them based on Y.
     // All of this is O(N*R) using hash maps, where R is the size of the ruleset.
-    public int Solve(string inputPath)
+    public long Solve(string inputPath)
     {
         string[] lines = File.ReadAllLines(inputPath);
         int sumOfMiddlePages = 0;
@@ -93,7 +93,7 @@ public class Day_5 : IDay
     }
 
     // Intuition: Suspected this at first, and after researching it is a directed acyclic graph (DAG). This can be solved using depth first search. O(N+R) according to wikipedia.
-    public int SolvePartTwo(string inputPath)
+    public long SolvePartTwo(string inputPath)
     {
         string[] lines = File.ReadAllLines(inputPath);
         int total = 0;

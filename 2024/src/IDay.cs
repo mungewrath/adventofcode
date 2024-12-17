@@ -1,5 +1,5 @@
 public interface IDay
 {
-    public int Solve(string inputPath);
-    public int SolvePartTwo(string inputPath);
+    public long Solve(string inputPath);
+    public long SolvePartTwo(string inputPath);
 }

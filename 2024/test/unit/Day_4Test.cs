@@ -9,7 +9,7 @@ public class Day_4Test
         using ILoggerFactory factory = LoggerFactory.Create(builder => { });
         Day_4 solver = new(factory);
 
-        int result = solver.Solve("day_4_sample.txt");
+        long result = solver.Solve("day_4_sample.txt");
 
         Assert.Equal(18, result);
     }
@@ -20,7 +20,7 @@ public class Day_4Test
         using ILoggerFactory factory = LoggerFactory.Create(builder => { });
         Day_4 solver = new(factory);
 
-        int result = solver.SolvePartTwo("day_4_sample.txt");
+        long result = solver.SolvePartTwo("day_4_sample.txt");
 
         Assert.Equal(9, result);
     }

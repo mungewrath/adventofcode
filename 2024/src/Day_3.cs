@@ -11,7 +11,7 @@ public class Day_3 : IDay
 
     // Intuition: Reminiscent of compilers/translators.
     // Make a finite state machine to match the pattern - this can be done in O(N) time
-    public int Solve(string inputPath)
+    public long Solve(string inputPath)
     {
         string lines = string.Join("", File.ReadAllLines(inputPath));
 
@@ -232,7 +232,7 @@ public class Day_3 : IDay
     }
 
     // Same as above, but the code was extended
-    public int SolvePartTwo(string inputPath)
+    public long SolvePartTwo(string inputPath)
     {
         string lines = string.Join("", File.ReadAllLines(inputPath));
 

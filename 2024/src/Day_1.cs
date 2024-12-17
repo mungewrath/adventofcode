@@ -10,7 +10,7 @@ public class Day_1 : IDay
         _logger = factory.CreateLogger<Day_1>();
     }
 
-    public int Solve(string inputPath)
+    public long Solve(string inputPath)
     {
         (var firstList, var secondList) = ReadAllLines(inputPath);
 
@@ -27,7 +27,7 @@ public class Day_1 : IDay
         return sum;
     }
 
-    public int SolvePartTwo(string inputPath)
+    public long SolvePartTwo(string inputPath)
     {
         (var first, var second) = ReadAllLines(inputPath);
 

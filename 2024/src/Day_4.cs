@@ -10,7 +10,7 @@ public class Day_4 : IDay
     }
 
     // Intuition: Iterating through the matrix of characters, you can try all 8 directions for an XMAS spelling. This is O(N) since XMAS is a constant.
-    public int Solve(string inputPath)
+    public long Solve(string inputPath)
     {
         string[] lines = File.ReadAllLines(inputPath);
         int total = 0;
@@ -58,7 +58,7 @@ public class Day_4 : IDay
     }
 
     // Intuition: Similar to part one. Iterate through the input but now we are looking for the 'A' which is the center.
-    public int SolvePartTwo(string inputPath)
+    public long SolvePartTwo(string inputPath)
     {
         string[] lines = File.ReadAllLines(inputPath);
         int total = 0;

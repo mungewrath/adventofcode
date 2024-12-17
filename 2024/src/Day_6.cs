@@ -10,7 +10,7 @@ public class Day_6 : IDay
 
     // Intuition: Straightforward play-through-the-steps puzzle;
     // not sure about upper bound complexity on this one because you can re-cross the same spot many times. But unless there's a cycle, each run across the map would get you at least one more spot, so perhaps ≈O(W*(H^2)) or O((W^2)*H)?
-    public int Solve(string inputPath)
+    public long Solve(string inputPath)
     {
         string[] lines = File.ReadAllLines(inputPath);
         bool[,] visited = new bool[lines.Length, lines[0].Length];
@@ -96,7 +96,7 @@ public class Day_6 : IDay
     // Intuition: Brute force iterate through the space, trying an obstacle at every position.
     // Originally tried to do this more intelligently but there were too many edge cases.
     // The runtime is pretty bad though.
-    public int SolvePartTwo(string inputPath)
+    public long SolvePartTwo(string inputPath)
     {
         string[] lines = File.ReadAllLines(inputPath);
         HashSet<(int, int)> obstacles = [];
