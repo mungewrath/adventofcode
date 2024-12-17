@@ -93,10 +93,81 @@ public class Day_6 : IDay
         return total;
     }
 
+    // Intuition: Brute force iterate through the space, trying an obstacle at every position.
+    // Originally tried to do this more intelligently but there were too many edge cases.
+    // The runtime is pretty bad though.
     public int SolvePartTwo(string inputPath)
     {
         string[] lines = File.ReadAllLines(inputPath);
+        HashSet<(int, int)> obstacles = [];
 
-        return 0;
+        char[,] map = new char[lines.Length, lines[0].Length];
+        for (int j = 0; j < lines.Length; j++)
+        {
+            for (int i = 0; i < lines[j].Length; i++)
+            {
+                map[j, i] = lines[j][i];
+            }
+        }
+
+        // Assume the guard is always starting going up
+        int dirX = 0, dirY = -1;
+        (int x, int y) = GetStartingCoordinates(lines);
+
+        for (int j = 0; j < lines.Length; j++)
+        {
+            for (int i = 0; i < lines[j].Length; i++)
+            {
+                if (map[j, i] == '#')
+                    continue;
+
+                map[j, i] = '#';
+                if (!obstacles.Contains((x + dirX, y + dirY)) && HasCycle(x, y, dirX, dirY, map))
+                {
+                    _logger.LogInformation("Added obstacle at {x}, {y}", i, j);
+                    obstacles.Add((i, j));
+
+                }
+                map[j, i] = '.';
+            }
+        }
+
+        return obstacles.Count;
+    }
+
+    private bool HasCycle(int x, int y,
+        int dirX, int dirY, char[,] map)
+    {
+        HashSet<(int, int, int, int)> positionsAndDirs = [];
+
+        while (true)
+        {
+            if (positionsAndDirs.Contains((x, y, dirX, dirY)))
+            {
+                return true;
+            }
+
+            positionsAndDirs.Add((x, y, dirX, dirY));
+
+            if (y + dirY < 0 || y + dirY >= map.GetLength(0) ||
+               x + dirX < 0 || x + dirX >= map.GetLength(1))
+            {
+                break;
+            }
+
+            if (map[y + dirY, x + dirX] == '#')
+            {
+                (dirX, dirY) = RotateClockwise(dirX, dirY);
+                // _logger.LogInformation("Rotating. New direction {x2}, {y2}", dirX, dirY);
+            }
+            else
+            {
+                // _logger.LogInformation("Moving from {x}, {y} to {x2}, {y2}", x, y, x + dirX, y + dirY);
+                x += dirX;
+                y += dirY;
+            }
+        }
+
+        return false;
     }
 }

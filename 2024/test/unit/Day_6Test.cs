@@ -17,11 +17,17 @@ public class Day_6Test
     [Fact]
     public void SolvePartTwo_()
     {
-        using ILoggerFactory factory = LoggerFactory.Create(builder => { });
+        using ILoggerFactory factory = LoggerFactory.Create(builder =>
+        {
+            builder.AddFilter("Microsoft", LogLevel.Warning)
+                .AddFilter("System", LogLevel.Warning)
+                .AddConsole()
+                .AddFile("logs/app-{Date}.log");
+        });
         Day_6 solver = new(factory);
 
         int result = solver.SolvePartTwo("day_6_sample.txt");
 
-        Assert.Equal(31, result);
+        Assert.Equal(6, result);
     }
 }

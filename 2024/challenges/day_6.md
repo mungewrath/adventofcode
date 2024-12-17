@@ -121,6 +121,7 @@ In the above example, there are only 6 different positions where a new obstructi
 
 Option one, put a printing press next to the guard's starting position:
 
+```
 ....#.....
 ....+---+#
 ....|...|.
@@ -131,9 +132,11 @@ Option one, put a printing press next to the guard's starting position:
 ........#.
 #.........
 ......#...
+```
 
 Option two, put a stack of failed suit prototypes in the bottom right quadrant of the mapped area:
 
+```
 ....#.....
 ....+---+#
 ....|...|.
@@ -144,9 +147,11 @@ Option two, put a stack of failed suit prototypes in the bottom right quadrant o
 ......O.#.
 #.........
 ......#...
+```
 
 Option three, put a crate of chimney-squeeze prototype fabric next to the standing desk in the bottom right quadrant:
 
+```
 ....#.....
 ....+---+#
 ....|...|.
@@ -157,9 +162,11 @@ Option three, put a crate of chimney-squeeze prototype fabric next to the standi
 .+----+O#.
 #+----+...
 ......#...
+```
 
 Option four, put an alchemical retroencabulator near the bottom left corner:
 
+```
 ....#.....
 ....+---+#
 ....|...|.
@@ -170,9 +177,11 @@ Option four, put an alchemical retroencabulator near the bottom left corner:
 ..|...|.#.
 #O+---+...
 ......#...
+```
 
 Option five, put the alchemical retroencabulator a bit to the right instead:
 
+```
 ....#.....
 ....+---+#
 ....|...|.
@@ -183,9 +192,11 @@ Option five, put the alchemical retroencabulator a bit to the right instead:
 ....|.|.#.
 #..O+-+...
 ......#...
+```
 
 Option six, put a tank of sovereign glue right next to the tank of universal solvent:
 
+```
 ....#.....
 ....+---+#
 ....|...|.
@@ -196,6 +207,7 @@ Option six, put a tank of sovereign glue right next to the tank of universal sol
 .+----++#.
 #+----++..
 ......#O..
+```
 
 It doesn't really matter what you choose to use as an obstacle so long as you and The Historians can put it into position without the guard noticing. The important thing is having enough options that you can find one that minimizes time paradoxes, and in this example, there are 6 different positions you could choose.
 
