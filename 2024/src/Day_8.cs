@@ -115,10 +115,50 @@ public class Day_8 : IDay
         }
     }
 
+    // Intuition: The core problem is the same as part one, and just needs to be extended so we iterate in each direction, marking hotspots until leaving the map.
+    // O(W*N*A^2), where W is the widest dimension of the map.
     public long SolvePartTwo(string inputPath)
     {
         string[] lines = File.ReadAllLines(inputPath);
+        var allAntennas = ReadMap(lines);
+        mapHeight = lines.Length;
+        mapWidth = lines[0].Length;
 
-        return 0;
+        foreach (var codeAndAntennas in allAntennas)
+        {
+            char code = codeAndAntennas.Key;
+
+            _logger.LogInformation("Identifying hotspots for antenna type {c}", code);
+            List<Antenna> antennas = codeAndAntennas.Value;
+
+            for (int i = 0; i < antennas.Count; i++)
+            {
+                for (int j = i + 1; j < antennas.Count; j++)
+                {
+                    (int dx, int dy) = antennas[i].CalculateDistance(antennas[j]);
+                    // Start right on the antenna since that is always a hotspot in part two
+                    (int x, int y) = (antennas[i].X, antennas[i].Y);
+
+
+                    while (x >= 0 && x < mapWidth && y >= 0 && y < mapHeight)
+                    {
+                        hotSpots.Add((x, y));
+                        x -= dx;
+                        y -= dy;
+                    }
+
+                    (x, y) = (antennas[i].X + dx, antennas[i].Y + dy);
+
+                    while (x >= 0 && x < mapWidth && y >= 0 && y < mapHeight)
+                    {
+                        hotSpots.Add((x, y));
+                        x += dx;
+                        y += dy;
+                    }
+                }
+            }
+        }
+
+        return hotSpots.Count;
     }
 }

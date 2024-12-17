@@ -22,6 +22,6 @@ public class Day_8Test
 
         long result = solver.SolvePartTwo("day_8_sample.txt");
 
-        Assert.Equal(31, result);
+        Assert.Equal(34, result);
     }
 }
