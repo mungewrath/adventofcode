@@ -11,7 +11,7 @@ public class Day_9Test
 
         long result = solver.Solve("day_9_sample.txt");
 
-        Assert.Equal(11, result);
+        Assert.Equal(1928, result);
     }
 
     [Fact]
@@ -22,6 +22,6 @@ public class Day_9Test
 
         long result = solver.SolvePartTwo("day_9_sample.txt");
 
-        Assert.Equal(31, result);
+        Assert.Equal(2858, result);
     }
 }
