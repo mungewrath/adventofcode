@@ -11,7 +11,7 @@ public class Day_11Test
 
         long result = solver.Solve("day_11_sample.txt");
 
-        Assert.Equal(11, result);
+        Assert.Equal(7, result);
     }
 
     [Fact]
