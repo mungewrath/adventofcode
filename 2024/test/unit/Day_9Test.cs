@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 public class Day_9Test
 {
     [Fact]
-    public void Solve_()
+    public void Solve_MovesBitsToFreeSpace()
     {
         using ILoggerFactory factory = LoggerFactory.Create(builder => { });
         Day_9 solver = new(factory);
@@ -15,9 +15,15 @@ public class Day_9Test
     }
 
     [Fact]
-    public void SolvePartTwo_()
+    public void SolvePartTwo_MovesFilesToFreeSpace()
     {
-        using ILoggerFactory factory = LoggerFactory.Create(builder => { });
+        using ILoggerFactory factory = LoggerFactory.Create(builder =>
+        {
+            builder.AddFilter("Microsoft", LogLevel.Warning)
+                .AddFilter("System", LogLevel.Warning)
+                .AddConsole()
+                .AddFile("logs/app-{Date}.log");
+        });
         Day_9 solver = new(factory);
 
         long result = solver.SolvePartTwo("day_9_sample.txt");
