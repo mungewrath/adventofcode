@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 public class Day_12Test
 {
     [Fact]
-    public void Solve_()
+    public void Solve_CountsPerimeterAndArea()
     {
         using ILoggerFactory factory = LoggerFactory.Create(builder => { });
         Day_12 solver = new(factory);
@@ -15,13 +15,13 @@ public class Day_12Test
     }
 
     [Fact]
-    public void SolvePartTwo_()
+    public void SolvePartTwo_CountsSidesAndArea()
     {
         using ILoggerFactory factory = LoggerFactory.Create(builder => { });
         Day_12 solver = new(factory);
 
         long result = solver.SolvePartTwo("day_12_sample.txt");
 
-        Assert.Equal(31, result);
+        Assert.Equal(1206, result);
     }
 }
