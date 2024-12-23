@@ -55,7 +55,7 @@ public class AdventOfCode
             case 13:
                 return new Day_13(loggerFactory);
             case 14:
-                return new Day_14(loggerFactory);
+                return new Day_14(loggerFactory, width: 101, height: 103);
             case 15:
                 return new Day_15(loggerFactory);
             case 16:

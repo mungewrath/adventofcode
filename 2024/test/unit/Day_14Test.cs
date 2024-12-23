@@ -7,21 +7,10 @@ public class Day_14Test
     public void Solve_BucketsRobotsIntoCorrectQuadrants()
     {
         using ILoggerFactory factory = LoggerFactory.Create(builder => { });
-        Day_14 solver = new(factory);
+        Day_14 solver = new(factory, width: 11, height: 7);
 
         long result = solver.Solve("day_14_sample.txt");
 
         Assert.Equal(12, result);
-    }
-
-    [Fact]
-    public void SolvePartTwo_()
-    {
-        using ILoggerFactory factory = LoggerFactory.Create(builder => { });
-        Day_14 solver = new(factory);
-
-        long result = solver.SolvePartTwo("day_14_sample.txt");
-
-        Assert.Equal(31, result);
     }
 }

@@ -1,11 +1,16 @@
 using Microsoft.Extensions.Logging;
+using Serilog;
 
 public class Day_14 : IDay
 {
     private ILogger<Day_14> _logger;
-    public Day_14(ILoggerFactory factory)
+    private readonly int _width;
+    private readonly int _height;
+    public Day_14(ILoggerFactory factory, int width, int height)
     {
         _logger = factory.CreateLogger<Day_14>();
+        _width = width;
+        _height = height;
     }
 
     // Intuition: Since the robot wraps around, it's the same as mod.
@@ -17,19 +22,7 @@ public class Day_14 : IDay
 
         int[] quadrantTotals = new int[4];
 
-        foreach (Robot r in robots)
-        {
-            Quadrant q = r.GetQuadrant(seconds: 100);
-            _logger.LogInformation("Placed robot in quadrant {q}", q.ToString());
-            if (q == Quadrant.None)
-            {
-                continue;
-            }
-
-            quadrantTotals[(int)q] += 1;
-        }
-
-        return quadrantTotals.Aggregate(1, (acc, x) => acc * x);
+        return CalculateRisk(100, robots);
     }
 
     private List<Robot> ReadRobots(string[] lines)
@@ -69,25 +62,23 @@ public class Day_14 : IDay
         public int Dx;
         public int Dy;
 
-        private const int _width = 101;
-        private const int _height = 103;
 
-        public Quadrant GetQuadrant(int seconds)
+        public Quadrant GetQuadrant(int seconds, int width, int height)
         {
-            (int fx, int fy) = FinalPosition(seconds);
-            if (fx == _width / 2 || fy == _height / 2)
+            (int fx, int fy) = FinalPosition(seconds, width, height);
+            if (fx == width / 2 || fy == height / 2)
             {
                 return Quadrant.None;
             }
-            else if (fx <= _width / 2 && fy <= _height / 2)
+            else if (fx <= width / 2 && fy <= height / 2)
             {
                 return Quadrant.UpperLeft;
             }
-            else if (fx > _width / 2 && fy <= _height / 2)
+            else if (fx > width / 2 && fy <= height / 2)
             {
                 return Quadrant.UpperRight;
             }
-            else if (fx <= _width / 2 && fy > _height / 2)
+            else if (fx <= width / 2 && fy > height / 2)
             {
                 return Quadrant.LowerLeft;
             }
@@ -97,30 +88,66 @@ public class Day_14 : IDay
             }
         }
 
-        private (int x, int y) FinalPosition(int seconds)
+        private (int x, int y) FinalPosition(int seconds, int width, int height)
         {
             (int fx, int fy) = (
-                (X + Dx * seconds) % _width,
-                (Y + Dy * seconds) % _height
+                (X + Dx * seconds) % width,
+                (Y + Dy * seconds) % height
             );
 
             if (fx < 0)
             {
-                fx += _width;
+                fx += width;
             }
             if (fy < 0)
             {
-                fy += _height;
+                fy += height;
             }
 
             return (fx, fy);
         }
     }
 
+    // Ok, I had to look this one up. Possibly a coincidence that 
+    // the minimum risk coincides with the easter egg formation.
+    // O(N*T), where T is the number of times being sampled.
     public long SolvePartTwo(string inputPath)
     {
         string[] lines = File.ReadAllLines(inputPath);
+        var robots = ReadRobots(lines);
 
-        return 0;
+        long minRisk = long.MaxValue;
+        long minRiskSeconds = 0;
+
+        for (int t = 0; t < 10_000; t++)
+        {
+            long risk = CalculateRisk(seconds: t, robots);
+            if (risk < minRisk)
+            {
+                minRiskSeconds = t;
+                minRisk = risk;
+            }
+        }
+
+        return minRiskSeconds;
+    }
+
+    private long CalculateRisk(int seconds, List<Robot> robots)
+    {
+        int[] quadrantTotals = new int[4];
+
+        foreach (Robot r in robots)
+        {
+            Quadrant q = r.GetQuadrant(seconds: seconds, _width, _height);
+            // _logger.LogInformation("Placed robot in quadrant {q}", q.ToString());
+            if (q == Quadrant.None)
+            {
+                continue;
+            }
+
+            quadrantTotals[(int)q] += 1;
+        }
+
+        return quadrantTotals.Aggregate(1, (acc, x) => acc * x);
     }
 }
