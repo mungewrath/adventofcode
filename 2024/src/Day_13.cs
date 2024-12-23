@@ -18,14 +18,20 @@ public class Day_13 : IDay
 
         foreach (ClawMachine m in machines)
         {
-            (long? ap, long? bp) = CalculateWinningCombo(m, max: 100);
-            if (ap != null)
+            if (CalculateWinningCombo(m, max: 100, out long ap, out long bp))
             {
-                totalTokensSpent += ap.Value * 3 + bp.Value;
+                if (m.A1 * ap + m.B1 * bp != m.X ||
+                   m.A2 * ap + m.B2 * bp != m.Y)
+                {
+                    _logger.LogError("Wrong solution identified for {ap},{bp} => {x} {y}. Disaster", ap, bp, m.X, m.Y);
+                }
+
+                _logger.LogInformation("Won a prize pressing Ax{a} and Bx{b}", ap, bp);
+                totalTokensSpent += ap * 3 + bp;
             }
         }
 
-        return (long)totalTokensSpent;
+        return totalTokensSpent;
     }
 
     private class ClawMachine
@@ -83,10 +89,10 @@ public class Day_13 : IDay
     // ^a2  ^x    ^b1    ^b2 ^a1   ^y  ^a1
     //
     // We know the bounds are 0 <= b <= 100, so it can be solved with binary search in O(log N) time.
-    private (long? aPresses, long? bPresses) CalculateWinningCombo(ClawMachine m, long max)
+    private bool CalculateWinningCombo(ClawMachine m, long max, out long aPresses, out long bPresses)
     {
-        long? aPresses = null, bPresses = null;
-
+        bool found = false;
+        aPresses = bPresses = 0;
         bool negativeTrend = m.GetVariableSide(1) > m.GetVariableSide(2);
 
         long min = 0;
@@ -101,6 +107,7 @@ public class Day_13 : IDay
             if (varSide == numSide)
             {
                 bPresses = i;
+                found = true;
                 break;
             }
             else if (varSide > numSide == !negativeTrend)
@@ -115,16 +122,13 @@ public class Day_13 : IDay
             }
         }
 
-        if (bPresses != null && (m.X - m.B1 * bPresses.Value) % m.A1 == 0)
+        if (found && (m.X - m.B1 * bPresses) % m.A1 == 0)
         {
-            aPresses = (m.X - m.B1 * bPresses.Value) / m.A1;
-        }
-        else
-        {
-            bPresses = null;
+            aPresses = (m.X - m.B1 * bPresses) / m.A1;
+            return true;
         }
 
-        return (aPresses, bPresses);
+        return false;
     }
 
     public long SolvePartTwo(string inputPath)
@@ -136,19 +140,16 @@ public class Day_13 : IDay
 
         foreach (ClawMachine m in machines)
         {
-            (long? ap, long? bp) = CalculateWinningCombo(m, max: 10_000_000_000_000);
-
-            // if (SolveClawMachine(m.A1, m.A2, m.B1, m.B2, m.X, m.Y, out long ap, out long bp))
-            if (ap != null)
+            if (CalculateWinningCombo(m, max: 10_000_000_000_000, out long ap, out long bp))
             {
-                if (m.A1 * ap.Value + m.B1 * bp.Value != m.X ||
-                   m.A2 * ap.Value + m.B2 * bp.Value != m.Y)
+                if (m.A1 * ap + m.B1 * bp != m.X ||
+                   m.A2 * ap + m.B2 * bp != m.Y)
                 {
-                    _logger.LogError("Wrong solution identified for {ap},{bp} => {x} {y}. Disaster", ap.Value, bp.Value, m.X, m.Y);
+                    _logger.LogError("Wrong solution identified for {ap},{bp} => {x} {y}. Disaster", ap, bp, m.X, m.Y);
                 }
 
-                _logger.LogInformation("Won a prize pressing Ax{a} and Bx{b}", ap.Value, bp.Value);
-                totalTokensSpent += ap.Value * 3 + bp.Value;
+                _logger.LogInformation("Won a prize pressing Ax{a} and Bx{b}", ap, bp);
+                totalTokensSpent += ap * 3 + bp;
             }
         }
 
