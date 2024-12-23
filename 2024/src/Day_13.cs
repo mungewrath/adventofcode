@@ -25,7 +25,7 @@ public class Day_13 : IDay
             }
         }
 
-        return totalTokensSpent;
+        return (long)totalTokensSpent;
     }
 
     private class ClawMachine
@@ -48,7 +48,7 @@ public class Day_13 : IDay
         List<ClawMachine> machines = [];
 
         // Incrementing by 4 each time since there is an empty line in between machines
-        for (long i = 0; i < lines.Length; i += 4)
+        for (int i = 0; i < lines.Length; i += 4)
         {
             ClawMachine m = new();
 
@@ -115,9 +115,13 @@ public class Day_13 : IDay
             }
         }
 
-        if (bPresses != null)
+        if (bPresses != null && (m.X - m.B1 * bPresses.Value) % m.A1 == 0)
         {
             aPresses = (m.X - m.B1 * bPresses.Value) / m.A1;
+        }
+        else
+        {
+            bPresses = null;
         }
 
         return (aPresses, bPresses);
@@ -133,8 +137,17 @@ public class Day_13 : IDay
         foreach (ClawMachine m in machines)
         {
             (long? ap, long? bp) = CalculateWinningCombo(m, max: 10_000_000_000_000);
+
+            // if (SolveClawMachine(m.A1, m.A2, m.B1, m.B2, m.X, m.Y, out long ap, out long bp))
             if (ap != null)
             {
+                if (m.A1 * ap.Value + m.B1 * bp.Value != m.X ||
+                   m.A2 * ap.Value + m.B2 * bp.Value != m.Y)
+                {
+                    _logger.LogError("Wrong solution identified for {ap},{bp} => {x} {y}. Disaster", ap.Value, bp.Value, m.X, m.Y);
+                }
+
+                _logger.LogInformation("Won a prize pressing Ax{a} and Bx{b}", ap.Value, bp.Value);
                 totalTokensSpent += ap.Value * 3 + bp.Value;
             }
         }
