@@ -4,14 +4,14 @@ using Microsoft.Extensions.Logging;
 public class Day_13Test
 {
     [Fact]
-    public void Solve_()
+    public void Solve_CalculatesWinningComboCosts()
     {
         using ILoggerFactory factory = LoggerFactory.Create(builder => { });
         Day_13 solver = new(factory);
 
         long result = solver.Solve("day_13_sample.txt");
 
-        Assert.Equal(11, result);
+        Assert.Equal(480, result);
     }
 
     [Fact]
@@ -22,6 +22,6 @@ public class Day_13Test
 
         long result = solver.SolvePartTwo("day_13_sample.txt");
 
-        Assert.Equal(31, result);
+        Assert.Equal(875318608908, result);
     }
 }
