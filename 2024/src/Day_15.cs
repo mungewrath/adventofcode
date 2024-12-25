@@ -66,7 +66,9 @@ public class Day_15 : IDay
         Empty = 0,
         Wall = 1,
         Box = 2,
-        Robot = 3
+        Robot = 3,
+        LeftBox = 4,
+        RightBox = 5
     }
 
     private (List<List<Space>> warehouse, List<Direction> moves, int x, int y) ParseWarehouse(string[] lines)
@@ -79,6 +81,31 @@ public class Day_15 : IDay
         while (lines[idx] != string.Empty)
         {
             (var l, int? robotX) = ParseWarehouseLine(lines[idx]);
+
+            if (robotX.HasValue)
+            {
+                x = robotX.Value;
+                y = idx;
+            }
+            warehouse.Add(l);
+            idx++;
+        }
+
+        idx++;
+
+        return (warehouse, ParseDirections(string.Join("", lines[idx..])), x, y);
+    }
+
+    private (List<List<Space>> warehouse, List<Direction> moves, int x, int y) ParseWarehouseWide(string[] lines)
+    {
+        int idx = 0;
+        int x = 0, y = 0;
+
+        List<List<Space>> warehouse = [];
+
+        while (lines[idx] != string.Empty)
+        {
+            (var l, int? robotX) = ParseWarehouseLineWide(lines[idx]);
 
             if (robotX.HasValue)
             {
@@ -111,6 +138,29 @@ public class Day_15 : IDay
                     return Space.Robot;
                 default:
                     return Space.Empty;
+            }
+        }).ToList();
+
+        return (spaces, robotX);
+    }
+
+    private (List<Space>, int? robotX) ParseWarehouseLineWide(string line)
+    {
+        int? robotX = null;
+
+        var spaces = line.SelectMany<char, Space>((c, idx) =>
+        {
+            switch (c)
+            {
+                case '#':
+                    return [Space.Wall, Space.Wall];
+                case 'O':
+                    return [Space.LeftBox, Space.RightBox];
+                case '@':
+                    robotX = idx * 2;
+                    return [Space.Robot, Space.Empty];
+                default:
+                    return [Space.Empty, Space.Empty];
             }
         }).ToList();
 
@@ -166,18 +216,35 @@ public class Day_15 : IDay
                 return true;
             case Space.Box:
                 return CanPush(x + dx, y + dy, dx, dy, warehouse);
+            case Space.LeftBox:
+                return CanPush(x + dx, y + dy, dx, dy, warehouse) &&
+                        (dx == -1 || CanPush(x + dx + 1, y + dy, dx, dy, warehouse)
+                        );
+            case Space.RightBox:
+                return CanPush(x + dx, y + dy, dx, dy, warehouse) &&
+                        (dx == 1 || CanPush(x + dx - 1, y + dy, dx, dy, warehouse)
+                        );
             default:
                 return false;
         }
     }
 
-    private void Push(int x, int y, int dx, int dy, List<List<Space>> warehouse)
+    private void Push(int x, int y, int dx, int dy, List<List<Space>> warehouse, bool sideEffect = false)
     {
         if (warehouse[y][x] == Space.Empty)
         {
             return;
         }
         Push(x + dx, y + dy, dx, dy, warehouse);
+
+        if (warehouse[y][x] == Space.LeftBox && dy != 0 && !sideEffect)
+        {
+            Push(x + 1, y, dx, dy, warehouse, sideEffect: true);
+        }
+        else if (warehouse[y][x] == Space.RightBox && dy != 0 && !sideEffect)
+        {
+            Push(x - 1, y, dx, dy, warehouse, sideEffect: true);
+        }
         warehouse[y + dy][x + dx] = warehouse[y][x];
         warehouse[y][x] = Space.Empty;
     }
@@ -194,6 +261,8 @@ public class Day_15 : IDay
             Space.Wall => '#',
             Space.Robot => 'R',
             Space.Box => 'O',
+            Space.LeftBox => '[',
+            Space.RightBox => ']',
             _ => throw new InvalidOperationException(),
         };
     }
@@ -206,7 +275,7 @@ public class Day_15 : IDay
         {
             for (int x = 0; x < warehouse[y].Count; x++)
             {
-                if (warehouse[y][x] == Space.Box)
+                if (warehouse[y][x] == Space.Box || warehouse[y][x] == Space.LeftBox)
                 {
                     total += y * 100 + x;
                 }
@@ -216,10 +285,52 @@ public class Day_15 : IDay
         return total;
     }
 
+    // Intuition: Similar recursive approach as part one for pushing, but the worst case is more complex. Hypothetically, if every next space has more boxes, you would have to do W(W+1)/2 checks, or O(M*W(W+1)/2) overall time complexity.
+    // [][][][]
+    //  [][][]
+    //   [][]
+    //    []
     public long SolvePartTwo(string inputPath)
     {
         string[] lines = File.ReadAllLines(inputPath);
+        (var warehouse, var directions, int x, int y) = ParseWarehouseWide(lines);
 
-        return 0;
+        _logger.LogInformation("Initial state");
+        PrintWarehouse(warehouse);
+
+        foreach (Direction d in directions)
+        {
+            switch (d)
+            {
+                case Direction.North:
+                    if (AttemptMove(x, y, 0, -1, warehouse))
+                    {
+                        y -= 1;
+                    }
+                    break;
+                case Direction.East:
+                    if (AttemptMove(x, y, 1, 0, warehouse))
+                    {
+                        x += 1;
+                    }
+                    break;
+                case Direction.South:
+                    if (AttemptMove(x, y, 0, 1, warehouse))
+                    {
+                        y += 1;
+                    }
+                    break;
+                case Direction.West:
+                    if (AttemptMove(x, y, -1, 0, warehouse))
+                    {
+                        x -= 1;
+                    }
+                    break;
+            }
+
+            PrintWarehouse(warehouse);
+        }
+
+        return SumOfBoxCoords(warehouse);
     }
 }

@@ -38,7 +38,7 @@ public class Day_15Test
     }
 
     [Fact]
-    public void SolvePartTwo_()
+    public void SolvePartTwo_CorrectlyMovesWideBoxes()
     {
         using ILoggerFactory factory = LoggerFactory.Create(builder =>
         {
@@ -51,6 +51,6 @@ public class Day_15Test
 
         long result = solver.SolvePartTwo("day_15_sample.txt");
 
-        Assert.Equal(31, result);
+        Assert.Equal(9021, result);
     }
 }
