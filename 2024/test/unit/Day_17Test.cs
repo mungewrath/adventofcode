@@ -21,13 +21,13 @@ public class Day_17Test
     }
 
     [Fact]
-    public void SolvePartTwo_()
+    public void SolvePartTwo_FindsSelfReplicatingAValue()
     {
         using ILoggerFactory factory = LoggerFactory.Create(builder => { });
         Day_17 solver = new(factory);
 
-        long result = solver.SolvePartTwo("day_17_sample.txt");
+        long result = solver.SolvePartTwo("day_17_sample2.txt");
 
-        Assert.Equal(31, result);
+        Assert.Equal(117440, result);
     }
 }

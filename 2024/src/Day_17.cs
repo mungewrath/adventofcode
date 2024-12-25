@@ -3,9 +3,9 @@ using Microsoft.Extensions.Logging;
 public class Day_17 : IDay
 {
     private ILogger<Day_17> _logger;
-    private int a;
-    private int b;
-    private int c;
+    private long a;
+    private long b;
+    private long c;
 
     public Day_17(ILoggerFactory factory)
     {
@@ -16,12 +16,20 @@ public class Day_17 : IDay
     public long Solve(string inputPath)
     {
         string[] lines = File.ReadAllLines(inputPath);
-        a = int.Parse(lines[0].Split(": ")[1]);
-        b = int.Parse(lines[1].Split(": ")[1]);
-        c = int.Parse(lines[2].Split(": ")[1]);
+        a = long.Parse(lines[0].Split(": ")[1]);
+        b = long.Parse(lines[1].Split(": ")[1]);
+        c = long.Parse(lines[2].Split(": ")[1]);
 
         List<int> program = lines[4].Split(": ")[1].Split(",").Select(int.Parse).ToList();
+        List<int> outputs = Simulate(program);
 
+        _logger.LogInformation("Final output: {o}", string.Join(",", outputs));
+
+        return long.Parse(string.Join("", outputs));
+    }
+
+    private List<int> Simulate(List<int> program, bool shouldReplicate = false)
+    {
         List<int> outputs = [];
 
         int pos = 0;
@@ -54,7 +62,12 @@ public class Day_17 : IDay
                     b = b ^ c;
                     break;
                 case 5: // out
-                    outputs.Add(GetOperandValue(operand) % 8);
+                    outputs.Add((int)(GetOperandValue(operand) % 8));
+                    if (shouldReplicate && outputs[outputs.Count - 1] != program[outputs.Count - 1])
+                    {
+                        // End early because we are diverging
+                        return outputs;
+                    }
                     break;
                 case 6: // bdv
                     b = a / ((int)Math.Pow(2, GetOperandValue(operand)));
@@ -67,12 +80,10 @@ public class Day_17 : IDay
             }
         }
 
-        _logger.LogInformation("Final output: {o}", string.Join(",", outputs));
-
-        return long.Parse(string.Join("", outputs));
+        return outputs;
     }
 
-    private int GetOperandValue(int operand)
+    private long GetOperandValue(int operand)
     {
         if (operand < 4)
         {
@@ -97,10 +108,40 @@ public class Day_17 : IDay
 
     }
 
+    // Got stuck on this one. After looking up hints, break it down by working backwards:
+    // Each number output uses only 3 bits at a time for the input program we're trying to reproduce.
+    // So after finding the starting value of a needed to produce each output, starting at the end, shift left 3 bits.
     public long SolvePartTwo(string inputPath)
     {
         string[] lines = File.ReadAllLines(inputPath);
+        a = long.Parse(lines[0].Split(": ")[1]);
+        b = long.Parse(lines[1].Split(": ")[1]);
+        c = long.Parse(lines[2].Split(": ")[1]);
 
-        return 0;
+        List<int> program = lines[4].Split(": ")[1].Split(",").Select(int.Parse).ToList();
+
+        List<int> outputs = [];
+        long aStart = -1;
+
+        for (int idx = program.Count - 1; idx >= 0; idx--)
+        {
+            while (!string.Join(",", outputs).Equals(string.Join(",", program[idx..])))
+            {
+                aStart++;
+                a = aStart;
+                b = c = 0;
+                outputs = Simulate(program);
+            }
+
+            aStart <<= 3;
+            aStart -= 1;
+        }
+
+        aStart += 1;
+        aStart >>= 3;
+
+        _logger.LogInformation("Final output: {o}", string.Join(",", outputs));
+
+        return aStart;
     }
 }
