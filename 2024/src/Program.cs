@@ -63,7 +63,7 @@ public class AdventOfCode
             case 17:
                 return new Day_17(loggerFactory);
             case 18:
-                return new Day_18(loggerFactory);
+                return new Day_18(loggerFactory, memorySize: 71, simulateLength: 1024);
             case 19:
                 return new Day_19(loggerFactory);
             case 20:
