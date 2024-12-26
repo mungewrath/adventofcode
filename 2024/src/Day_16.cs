@@ -8,7 +8,6 @@ public class Day_16 : IDay
     private int endY;
     private int startX;
     private int startY;
-    private long minCost = long.MaxValue;
 
     public Day_16(ILoggerFactory factory)
     {
@@ -91,70 +90,24 @@ public class Day_16 : IDay
             {
                 visited[(x, y, d)] = cost;
 
-                if (d == Direction.North)
-                {
-                    var p = new HashSet<(int, int)>(path)
-                    {
-                        (x, y - 1)
-                    };
-                    q.Enqueue((x, y - 1, d, cost + 1, p), cost + 1);
-                }
-                else
-                {
-                    var p = new HashSet<(int, int)>(path)
-                    {
-                        (x, y - 1)
-                    };
-                    q.Enqueue((x, y - 1, Direction.North, cost + 1001, p), cost + 1001);
-                }
-                if (d == Direction.East)
-                {
-                    var p = new HashSet<(int, int)>(path)
-                    {
-                        (x + 1, y)
-                    };
-                    q.Enqueue((x + 1, y, d, cost + 1, p), cost + 1);
-                }
-                else
-                {
-                    var p = new HashSet<(int, int)>(path)
-                    {
-                        (x +1 , y)
-                    };
-                    q.Enqueue((x + 1, y, Direction.East, cost + 1001, p), cost + 1001);
-                }
-                if (d == Direction.South)
-                {
-                    var p = new HashSet<(int, int)>(path)
-                    {
-                        (x, y + 1)
-                    };
-                    q.Enqueue((x, y + 1, d, cost + 1, p), cost + 1);
-                }
-                else
-                {
-                    var p = new HashSet<(int, int)>(path)
-                    {
-                        (x, y + 1)
-                    };
-                    q.Enqueue((x, y + 1, Direction.South, cost + 1001, p), cost + 1001);
-                }
-                if (d == Direction.West)
-                {
-                    var p = new HashSet<(int, int)>(path)
-                    {
-                        (x - 1, y)
-                    };
-                    q.Enqueue((x - 1, y, d, cost + 1, p), cost + 1);
-                }
-                else
-                {
-                    var p = new HashSet<(int, int)>(path)
-                    {
-                        (x - 1, y)
-                    };
-                    q.Enqueue((x - 1, y, Direction.West, cost + 1001, p), cost + 1001);
-                }
+                HashSet<(int, int)> p;
+                long nextCost;
+
+                p = [.. path, (x, y - 1)];
+                nextCost = cost + (d == Direction.North ? 1 : 1001);
+                q.Enqueue((x, y - 1, Direction.North, nextCost, p), nextCost);
+
+                p = [.. path, (x + 1, y)];
+                nextCost = cost + (d == Direction.East ? 1 : 1001);
+                q.Enqueue((x + 1, y, Direction.East, nextCost, p), nextCost);
+
+                p = [.. path, (x, y + 1)];
+                nextCost = cost + (d == Direction.South ? 1 : 1001);
+                q.Enqueue((x, y + 1, Direction.South, nextCost, p), nextCost);
+
+                p = [.. path, (x - 1, y)];
+                nextCost = cost + (d == Direction.West ? 1 : 1001);
+                q.Enqueue((x - 1, y, Direction.West, nextCost, p), nextCost);
             }
         }
 
