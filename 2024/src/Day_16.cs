@@ -1,3 +1,4 @@
+using System.Text;
 using Microsoft.Extensions.Logging;
 
 public class Day_16 : IDay
@@ -20,7 +21,7 @@ public class Day_16 : IDay
         string[] lines = File.ReadAllLines(inputPath);
         var rt = ReadRacetrack(lines);
 
-        return Bfs(startX, startY, endX, endY, Direction.East, rt);
+        return Bfs(startX, startY, endX, endY, Direction.East, rt).minCost;
     }
 
     private char[,] ReadRacetrack(string[] lines)
@@ -56,21 +57,23 @@ public class Day_16 : IDay
         West
     }
 
-    private long Bfs(int startX, int startY, int endX, int endY, Direction startDir, char[,] rt)
+    private (long minCost, int numSeats) Bfs(int startX, int startY, int endX, int endY, Direction startDir, char[,] rt)
     {
-        PriorityQueue<(int x, int y, Direction d, long cost), long> q = new();
+        PriorityQueue<(int x, int y, Direction d, long cost, HashSet<(int, int)> path), long> q = new();
         long minCost = long.MaxValue;
-        HashSet<(int, int, Direction)> visited = [];
+        Dictionary<(int, int, Direction), long> visited = [];
+        HashSet<(int, int)> seatsOnWinningPaths = [(startX, startY)];
 
-        q.Enqueue((startX, startY, startDir, 0), 0);
+        q.Enqueue((startX, startY, startDir, 0, []), 0);
 
         while (q.Count > 0)
         {
-            (int x, int y, Direction d, long cost) = q.Dequeue();
+            (int x, int y, Direction d, long cost, HashSet<(int, int)> path) = q.Dequeue();
 
             // _logger.LogInformation("x={x},y={y},v={visited}", x, y, visited.Count);
 
-            if (cost > minCost || rt[y, x] == '#' || visited.Contains((x, y, d)))
+            if (cost > minCost || rt[y, x] == '#' ||
+                (visited.ContainsKey((x, y, d)) && visited[(x, y, d)] < cost))
             {
                 continue;
             }
@@ -79,53 +82,110 @@ public class Day_16 : IDay
             {
                 _logger.LogInformation("Found new route, with cost {cost}", cost);
                 minCost = Math.Min(cost, minCost);
+                foreach (var s in path)
+                {
+                    seatsOnWinningPaths.Add(s);
+                }
             }
             else
             {
-                visited.Add((x, y, d));
+                visited[(x, y, d)] = cost;
 
                 if (d == Direction.North)
                 {
-                    q.Enqueue((x, y - 1, d, cost + 1), cost + 1);
+                    var p = new HashSet<(int, int)>(path)
+                    {
+                        (x, y - 1)
+                    };
+                    q.Enqueue((x, y - 1, d, cost + 1, p), cost + 1);
                 }
                 else
                 {
-                    q.Enqueue((x, y - 1, Direction.North, cost + 1001), cost + 1001);
+                    var p = new HashSet<(int, int)>(path)
+                    {
+                        (x, y - 1)
+                    };
+                    q.Enqueue((x, y - 1, Direction.North, cost + 1001, p), cost + 1001);
                 }
                 if (d == Direction.East)
                 {
-                    q.Enqueue((x + 1, y, d, cost + 1), cost + 1);
+                    var p = new HashSet<(int, int)>(path)
+                    {
+                        (x + 1, y)
+                    };
+                    q.Enqueue((x + 1, y, d, cost + 1, p), cost + 1);
                 }
                 else
                 {
-                    q.Enqueue((x + 1, y, Direction.East, cost + 1001), cost + 1001);
+                    var p = new HashSet<(int, int)>(path)
+                    {
+                        (x +1 , y)
+                    };
+                    q.Enqueue((x + 1, y, Direction.East, cost + 1001, p), cost + 1001);
                 }
                 if (d == Direction.South)
                 {
-                    q.Enqueue((x, y + 1, d, cost + 1), cost + 1);
+                    var p = new HashSet<(int, int)>(path)
+                    {
+                        (x, y + 1)
+                    };
+                    q.Enqueue((x, y + 1, d, cost + 1, p), cost + 1);
                 }
                 else
                 {
-                    q.Enqueue((x, y + 1, Direction.South, cost + 1001), cost + 1001);
+                    var p = new HashSet<(int, int)>(path)
+                    {
+                        (x, y + 1)
+                    };
+                    q.Enqueue((x, y + 1, Direction.South, cost + 1001, p), cost + 1001);
                 }
                 if (d == Direction.West)
                 {
-                    q.Enqueue((x - 1, y, d, cost + 1), cost + 1);
+                    var p = new HashSet<(int, int)>(path)
+                    {
+                        (x - 1, y)
+                    };
+                    q.Enqueue((x - 1, y, d, cost + 1, p), cost + 1);
                 }
                 else
                 {
-                    q.Enqueue((x - 1, y, Direction.West, cost + 1001), cost + 1001);
+                    var p = new HashSet<(int, int)>(path)
+                    {
+                        (x - 1, y)
+                    };
+                    q.Enqueue((x - 1, y, Direction.West, cost + 1001, p), cost + 1001);
                 }
             }
         }
 
-        return minCost;
+        foreach ((int sx, int sy) in seatsOnWinningPaths)
+        {
+            rt[sy, sx] = 'O';
+        }
+        PrintRacetrack(rt);
+
+        return (minCost, seatsOnWinningPaths.Count);
+    }
+
+    private void PrintRacetrack(char[,] rt)
+    {
+        StringBuilder sb = new();
+        for (int y = 0; y < rt.GetLength(0); y++)
+        {
+            for (int x = 0; x < rt.GetLength(1); x++)
+            {
+                sb.Append(rt[y, x]);
+            }
+            sb.Append('\n');
+        }
+        _logger.LogInformation("{r}", sb.ToString());
     }
 
     public long SolvePartTwo(string inputPath)
     {
         string[] lines = File.ReadAllLines(inputPath);
+        var rt = ReadRacetrack(lines);
 
-        return 0;
+        return Bfs(startX, startY, endX, endY, Direction.East, rt).numSeats;
     }
 }

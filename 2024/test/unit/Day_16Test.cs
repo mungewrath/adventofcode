@@ -26,13 +26,19 @@ public class Day_16Test
     }
 
     [Fact]
-    public void SolvePartTwo_()
+    public void SolvePartTwo_FindsAllSeatsOnEveryBestPath()
     {
-        using ILoggerFactory factory = LoggerFactory.Create(builder => { });
+        using ILoggerFactory factory = LoggerFactory.Create(builder =>
+        {
+            builder.AddFilter("Microsoft", LogLevel.Warning)
+                .AddFilter("System", LogLevel.Warning)
+                .AddConsole()
+                .AddFile("logs/app-{Date}.log");
+        });
         Day_16 solver = new(factory);
 
         long result = solver.SolvePartTwo("day_16_sample.txt");
 
-        Assert.Equal(31, result);
+        Assert.Equal(45, result);
     }
 }
