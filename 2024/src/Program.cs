@@ -73,7 +73,7 @@ public class AdventOfCode
             case 21:
                 return new Day_21(loggerFactory);
             case 22:
-                return new Day_22(loggerFactory);
+                return new Day_22(loggerFactory, 2000);
             case 23:
                 return new Day_23(loggerFactory);
             case 24:
