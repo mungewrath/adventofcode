@@ -20,7 +20,9 @@ public class AdventOfCode
 
         long answer = solver.Solve(args[1]);
         logger.LogInformation("Received answer for part one: {answer}", answer);
-        long partTwoAnswer = solver.SolvePartTwo(args[1]);
+
+        IDay solver2 = CreateSolver(int.Parse(args[0]), factory);
+        long partTwoAnswer = solver2.SolvePartTwo(args[1]);
         logger.LogInformation("Received answer for part two: {partTwoAnswer}", partTwoAnswer);
     }
 

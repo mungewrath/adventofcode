@@ -40,12 +40,12 @@ public class Day_18 : IDay
         West
     }
 
-    private (long minCost, int numSeats) Bfs(int startX, int startY, int endX, int endY, Direction startDir, char[,] rt)
+    private (long minCost, HashSet<(int, int)> path) Bfs(int startX, int startY, int endX, int endY, Direction startDir, char[,] rt)
     {
         PriorityQueue<(int x, int y, Direction d, long cost, HashSet<(int, int)> path), long> q = new();
         long minCost = long.MaxValue;
         Dictionary<(int, int, Direction), long> visited = [];
-        HashSet<(int, int)> seatsOnWinningPaths = [(startX, startY)];
+        HashSet<(int, int)> escapePath = [(startX, startY)];
 
         q.Enqueue((startX, startY, startDir, 0, []), 0);
 
@@ -67,10 +67,7 @@ public class Day_18 : IDay
             {
                 _logger.LogInformation("Found new route, with cost {cost}", cost);
                 minCost = Math.Min(cost, minCost);
-                foreach (var s in path)
-                {
-                    seatsOnWinningPaths.Add(s);
-                }
+                escapePath = path;
             }
             else
             {
@@ -92,12 +89,49 @@ public class Day_18 : IDay
             }
         }
 
-        return (minCost, seatsOnWinningPaths.Count);
+        return (minCost, escapePath);
     }
 
+    // Intuition: After solving part 1, we need to do two more things:
+    // Read more obstacles until one falls that blocks the current solution;
+    // Run BFS again to see if any other escape is possible.
+    // O(W*H*T), where T is the number of steps before becoming blocked.
     public long SolvePartTwo(string inputPath)
     {
         string[] lines = File.ReadAllLines(inputPath);
+
+        for (int i = 0; i < _simulateLength; i++)
+        {
+            var split = lines[i].Split(",");
+            int x = int.Parse(split[0]);
+            int y = int.Parse(split[1]);
+            _map[y, x] = '#';
+        }
+
+        long minCost;
+        HashSet<(int, int)> path;
+        int t = _simulateLength - 1;
+        int ox = 0, oy = 0;
+
+
+        (minCost, path) = Bfs(0, 0, _memorySize - 1, _memorySize - 1, Direction.North, _map);
+
+        while (minCost != long.MaxValue)
+        {
+            do
+            {
+                t++;
+                var split = lines[t].Split(",");
+                ox = int.Parse(split[0]);
+                oy = int.Parse(split[1]);
+                _map[oy, ox] = '#';
+            } while (!path.Contains((ox, oy)));
+            _logger.LogInformation("({x}, {y}) was in path", ox, oy);
+
+            (minCost, path) = Bfs(0, 0, _memorySize - 1, _memorySize - 1, Direction.North, _map);
+        }
+
+        _logger.LogInformation("Obstacle blocking escape at t={t}: ({x}, {y})", t, ox, oy);
 
         return 0;
     }
