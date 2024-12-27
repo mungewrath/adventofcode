@@ -15,13 +15,24 @@ public class Day_22Test
     }
 
     [Fact]
-    public void SolvePartTwo_()
+    public void SolvePartTwo_FindsMaxSaleForSingleMonkey()
+    {
+        using ILoggerFactory factory = LoggerFactory.Create(builder => { });
+        Day_22 solver = new(factory, 10);
+
+        long result = solver.SolvePartTwo("day_22_sample2.txt");
+
+        Assert.Equal(6, result);
+    }
+
+    [Fact]
+    public void SolvePartTwo_FindsMaxSaleForManyMonkeys()
     {
         using ILoggerFactory factory = LoggerFactory.Create(builder => { });
         Day_22 solver = new(factory, 2000);
 
-        long result = solver.SolvePartTwo("day_22_sample.txt");
+        long result = solver.SolvePartTwo("day_22_sample3.txt");
 
-        Assert.Equal(31, result);
+        Assert.Equal(23, result);
     }
 }
