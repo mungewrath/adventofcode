@@ -15,13 +15,13 @@ public class Day_19Test
     }
 
     [Fact]
-    public void SolvePartTwo_()
+    public void SolvePartTwo_CountsAllPermutations()
     {
         using ILoggerFactory factory = LoggerFactory.Create(builder => { });
         Day_19 solver = new(factory);
 
         long result = solver.SolvePartTwo("day_19_sample.txt");
 
-        Assert.Equal(31, result);
+        Assert.Equal(16, result);
     }
 }
