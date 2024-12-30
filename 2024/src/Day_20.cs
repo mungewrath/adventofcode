@@ -4,6 +4,7 @@ public class Day_20 : IDay
 {
     private ILogger<Day_20> _logger;
     private readonly int _cheatThreshold;
+
     public Day_20(ILoggerFactory factory, int cheatThreshold)
     {
         _logger = factory.CreateLogger<Day_20>();
@@ -14,6 +15,7 @@ public class Day_20 : IDay
     // Intuition: Since there is only a single track, we can traverse all of it and save the # of steps remaining until the finish
     // in O(W*H) time.
     // After that, we traverse a second time, simulating cheats from various points. This tells us how many steps we "skipped" with a cheat, and can tally them up.
+    // Space complexity is O(W*H) as well.
     public long Solve(string inputPath)
     {
         string[] lines = File.ReadAllLines(inputPath);
@@ -43,7 +45,7 @@ public class Day_20 : IDay
         {
             for (int dx = -distance; dx <= distance; dx++)
             {
-                if (Math.Abs(dx + dy) == distance)
+                if (Math.Abs(dx) + Math.Abs(dy) == distance)
                 {
                     coords.Add((x + dx, y + dy));
                 }
@@ -164,10 +166,29 @@ public class Day_20 : IDay
         }
     }
 
+    // Intuition: Same overall approach as part one, but
+    // it might be worth thinking of the time as O(W*H*L)
+    // where L is the max length of a cheat.
     public long SolvePartTwo(string inputPath)
     {
         string[] lines = File.ReadAllLines(inputPath);
+        var rt = new Racetrack(lines);
 
-        return 0;
+        _logger.LogInformation("Identified {s} steps in the racetrack, including start/end", rt.StepsToFinish.Count);
+
+        long usefulCheatsFound = 0;
+
+        foreach (KeyValuePair<(int, int), int> s in rt.StepsToFinish)
+        {
+            // if (s.Value < _cheatThreshold)
+            // {
+            //     // This won't save enough time, skip
+            //     continue;
+            // }
+
+            usefulCheatsFound += FindUsefulCheats(x: s.Key.Item1, y: s.Key.Item2, rt, maxDistance: 20);
+        }
+
+        return usefulCheatsFound;
     }
 }
