@@ -69,7 +69,7 @@ public class AdventOfCode
             case 19:
                 return new Day_19(loggerFactory);
             case 20:
-                return new Day_20(loggerFactory);
+                return new Day_20(loggerFactory, cheatThreshold: 100);
             case 21:
                 return new Day_21(loggerFactory);
             case 22:
