@@ -35,7 +35,6 @@ public class Day_21 : IDay
 
     private List<char> TranslateCodeToLevel1Robot(string code)
     {
-        List<char> dpad = [];
         Dictionary<char, (int x, int y)> coordsForButtons = new(){
             {'7', (0, 0) },
             {'8', (1, 0) },
@@ -48,19 +47,20 @@ public class Day_21 : IDay
             {'3', (2, 2) },
             {'0', (1, 3) },
             {'A', (2, 3) },
-            {'X', (0,3)} // Illegal spot
+            {'X', (0, 3) } // Illegal spot
         };
+        return Translate([.. code], coordsForButtons);
+    }
 
+    private static List<char> Translate(List<char> code, Dictionary<char, (int x, int y)> coordsForButtons)
+    {
+        List<char> dpad = [];
         (int x, int y) = coordsForButtons['A'];
 
         foreach (char c in code)
         {
             (int nx, int ny) = coordsForButtons[c];
             // Order is important so robot doesn't go over an empty space and "panic"
-
-            // TODO: somehow this order influences the dpads later.
-            // Prefer this order and flip if it's not legal.
-
             List<char> stepsForNextButton = [];
             bool enteredIllegalSpot = false;
 
@@ -115,7 +115,7 @@ public class Day_21 : IDay
 
     private List<char> TranslateDpadToDpad(List<char> dpad1)
     {
-        List<char> dpad2 = [];
+        // List<char> dpad2 = [];
         Dictionary<char, (int x, int y)> coordsForButtons = new(){
             {'^', (1, 0) },
             {'A', (2, 0) },
@@ -125,63 +125,7 @@ public class Day_21 : IDay
             {'X', (0, 0) }
         };
 
-        (int x, int y) = coordsForButtons['A'];
-
-        foreach (char c in dpad1)
-        {
-            (int nx, int ny) = coordsForButtons[c];
-
-            // Order is important so robot doesn't go over an empty space and "panic"
-
-            List<char> stepsForNextButton = [];
-            bool enteredIllegalSpot = false;
-
-            while (nx > x)
-            {
-                stepsForNextButton.Add('>');
-                x++;
-                if ((x, y) == coordsForButtons['X'])
-                {
-                    enteredIllegalSpot = true;
-                }
-            }
-            while (ny > y)
-            {
-                stepsForNextButton.Add('v');
-                y++;
-                if ((x, y) == coordsForButtons['X'])
-                {
-                    enteredIllegalSpot = true;
-                }
-            }
-            while (ny < y)
-            {
-                stepsForNextButton.Add('^');
-                y--;
-                if ((x, y) == coordsForButtons['X'])
-                {
-                    enteredIllegalSpot = true;
-                }
-            }
-            while (nx < x)
-            {
-                stepsForNextButton.Add('<');
-                x--;
-                if ((x, y) == coordsForButtons['X'])
-                {
-                    enteredIllegalSpot = true;
-                }
-            }
-
-            if (enteredIllegalSpot)
-            {
-                stepsForNextButton.Reverse();
-            }
-            stepsForNextButton.Add('A');
-            dpad2.AddRange(stepsForNextButton);
-        }
-
-        return dpad2;
+        return Translate(dpad1, coordsForButtons);
     }
 
     public long SolvePartTwo(string inputPath)
