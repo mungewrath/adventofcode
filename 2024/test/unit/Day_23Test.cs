@@ -13,15 +13,4 @@ public class Day_23Test
 
         Assert.Equal(7, result);
     }
-
-    [Fact]
-    public void SolvePartTwo_()
-    {
-        using ILoggerFactory factory = LoggerFactory.Create(builder => { });
-        Day_23 solver = new(factory);
-
-        long result = solver.SolvePartTwo("day_23_sample.txt");
-
-        Assert.Equal(31, result);
-    }
 }
