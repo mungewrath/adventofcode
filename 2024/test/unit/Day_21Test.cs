@@ -7,7 +7,7 @@ public class Day_21Test
     public void Solve_TranslatesToHumanPressesOptimally()
     {
         using ILoggerFactory factory = LoggerFactory.Create(builder => { });
-        Day_21 solver = new(factory);
+        Day_21 solver = new(factory, 2);
 
         long result = solver.Solve("day_21_sample.txt");
 
@@ -15,13 +15,19 @@ public class Day_21Test
     }
 
     [Fact]
-    public void SolvePartTwo_()
+    public void SolvePartTwo_TranslatesToHumanPressesOptimally()
     {
-        using ILoggerFactory factory = LoggerFactory.Create(builder => { });
-        Day_21 solver = new(factory);
+        using ILoggerFactory factory = LoggerFactory.Create(builder =>
+        {
+            builder.AddFilter("Microsoft", LogLevel.Warning)
+                .AddFilter("System", LogLevel.Warning)
+                .AddConsole()
+                .AddFile("logs/app-{Date}.log");
+        });
+        Day_21 solver = new(factory, 2);
 
         long result = solver.SolvePartTwo("day_21_sample.txt");
 
-        Assert.Equal(31, result);
+        Assert.Equal(126384, result);
     }
 }
